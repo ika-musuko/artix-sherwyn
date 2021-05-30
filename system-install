@@ -37,6 +37,7 @@ echo "=== Partitioning disk ==="
 echo
 
 echo "=== Formatting partitions ==="
+    sleep 2
     mkfs.ext4 -L ROOT ${install_disk}2
     mkfs.ext4 -L HOME ${install_disk}3
     [ "${uefi+1}" ] && mkfs.fat -L EFI -F 32 ${install_disk}4 # only for UEFI
