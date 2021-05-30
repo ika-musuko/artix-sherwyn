@@ -90,10 +90,11 @@ else
 fi
 echo
 
-echo "=== Adding user ==="
-    $chroot echo $password | passwd --stdin root
+echo "=== Adding user and setting passwords ==="
+    password_and_confirm="$password\n$password"
+    $chroot echo -e "$password_and_confirm" | passwd root
     $chroot useradd -m $username
-    $chroot echo $password | passwd --stdin $username
+    $chroot echo -e "$password_and_confirm" | passwd $username
 echo
 
 echo "=== Setting hostname ==="
