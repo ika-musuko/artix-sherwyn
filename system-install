@@ -9,7 +9,9 @@ echo
 echo "=== Preferences ==="
 read -p "Enter username: " username
 read -p "Enter password: "   -s password
+echo
 read -p "Confirm password: " -s confirm_password
+echo
 [ "$password" != "$confirm_password" ] && echo "Passwords do not match" && exit
 
 read -p "Enter hostname: " hostname
