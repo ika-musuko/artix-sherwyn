@@ -94,6 +94,7 @@ echo "=== Adding user and setting passwords ==="
     password_and_confirm="$password\n$password"
     $chroot echo -e "$password_and_confirm" | passwd root
     $chroot useradd -m $username
+    sleep 2
     $chroot echo -e "$password_and_confirm" | passwd $username
 echo
 
