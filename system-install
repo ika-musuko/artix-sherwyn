@@ -80,10 +80,10 @@ echo "=== Boot loader ==="
 if [ "${uefi+1}" ] 
 then 
     sleep 2
-    pacman -S --no-confirm refind-efi
+    pacman -S --noconfirm refind-efi
     refind-install
 else
-    pacman -S --no-confirm grub os-prober
+    pacman -S --noconfirm grub os-prober
     grub-install --recheck ${install_disk}
     grub-mkconfig -o /boot/grub.cfg
 fi
@@ -100,13 +100,13 @@ echo "=== Setting hostname ==="
 echo
 
 echo "=== Installing network tools ==="
-    pacman -S --no-confirm dhcpcd wpa_supplicant
-    pacman -S --no-confirm connman-runit connman-gtk connman
+    pacman -S --noconfirm dhcpcd wpa_supplicant
+    pacman -S --noconfirm connman-runit connman-gtk connman
     ln -s /etc/runit/sv/connmand /run/runit/service
 echo
 
 echo "=== Installing X, terminal, and window manager ==="
-    pacman -S --no-confirm xorg xorg-xinit termite i3 i3blocks
+    pacman -S --noconfirm xorg xorg-xinit termite i3 i3blocks
 echo
 
 echo "=== Exiting system ==="
