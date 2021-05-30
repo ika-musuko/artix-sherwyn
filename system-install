@@ -8,11 +8,15 @@ echo
 
 echo "=== Preferences ==="
 read -p "Enter username: " username
-read -p "Enter password: "   -s password
-echo
-read -p "Confirm password: " -s confirm_password
-echo
-[ "$password" != "$confirm_password" ] && echo "Passwords do not match" && exit
+while :
+do
+    read -p "Enter password: " -s password
+    echo
+    read -p "Confirm password: " -s confirm_password
+    echo
+    [ "$password" == "$confirm_password" ] && break
+    echo "Passwords do not match" 
+done
 
 read -p "Enter hostname: " hostname
 read -p "Enter install disk: " install_disk
