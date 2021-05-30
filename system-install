@@ -26,19 +26,19 @@ echo "=== Detecting legacy or UEFI... ==="
 echo
 
 echo "=== Partitioning disk ==="
-    echo "Set \"$install_disk\"1 for swap"
-    echo "Set \"$install_disk\"2 for root"
-    echo "Set \"$install_disk\"3 for home"
-    [ -n $uefi ] && echo "Set \"$install_disk\"4 for uefi"
+    echo "Set ${install_disk}1 for swap"
+    echo "Set ${install_disk}2 for root"
+    echo "Set ${install_disk}3 for home"
+    [ -n $uefi ] && echo "Set ${install_disk}4 for uefi"
     read -p "Press enter to continue to cfdisk"
     cfdisk $install_disk
 echo
 
 echo "=== Formatting partitions ==="
-    mkfs.ext4 -L ROOT "$install_disk"2
-    mkfs.ext4 -L HOME "$install_disk"3
-    [ -n $uefi ] && mkfs.fat -L EFI -F 32 "$install_disk"4 # only for UEFI
-    mkswap -L SWAP "$install_disk"1
+    mkfs.ext4 -L ROOT ${install_disk}2
+    mkfs.ext4 -L HOME ${install_disk}3
+    [ -n $uefi ] && mkfs.fat -L EFI -F 32 ${install_disk}4 # only for UEFI
+    mkswap -L SWAP ${install_disk}1
 echo
 
 echo "=== Mounting partitions ==="
@@ -76,7 +76,7 @@ then
     refind-install
 else
     pacman -S grub os-prober
-    grub-install --recheck "$install_disk"
+    grub-install --recheck ${install_disk}
     grub-mkconfig -o /boot/grub.cfg
 fi
 echo
