@@ -22,6 +22,7 @@ echo "=== Detecting legacy or UEFI... ==="
         uefi=1
     else
         echo "Legacy boot detected"
+        unset uefi
     fi
 echo
 
@@ -29,7 +30,7 @@ echo "=== Partitioning disk ==="
     echo "Set ${install_disk}1 for swap"
     echo "Set ${install_disk}2 for root"
     echo "Set ${install_disk}3 for home"
-    [ -n $uefi ] && echo "Set ${install_disk}4 for uefi"
+    [ "${uefi+1}" ] && echo "Set ${install_disk}4 for uefi"
     read -p "Press enter to continue to cfdisk"
     cfdisk $install_disk
 echo
@@ -37,7 +38,7 @@ echo
 echo "=== Formatting partitions ==="
     mkfs.ext4 -L ROOT ${install_disk}2
     mkfs.ext4 -L HOME ${install_disk}3
-    [ -n $uefi ] && mkfs.fat -L EFI -F 32 ${install_disk}4 # only for UEFI
+    [ "${uefi+1}" ] && mkfs.fat -L EFI -F 32 ${install_disk}4 # only for UEFI
     mkswap -L SWAP ${install_disk}1
 echo
 
@@ -46,8 +47,8 @@ echo "=== Mounting partitions ==="
     mount /dev/disk/by-label/ROOT /mnt
     mount /dev/disk/by-label/HOME /mnt/home
 
-    [ -n $uefi ] && mkdir /mnt/boot 
-    [ -n $uefi ] && mount /dev/disk/by-label/EFI /mnt/boot/efi 
+    [ "${uefi+1}" ] && mkdir /mnt/boot 
+    [ "${uefi+1}" ] && mount /dev/disk/by-label/EFI /mnt/boot/efi 
 echo
 
 echo "=== Installing base system and kernel ==="
@@ -70,7 +71,7 @@ echo "=== Setting locales ==="
 echo
 
 echo "=== Boot loader ==="
-if [ -n $uefi ] 
+if [ "${uefi+1}" ] 
 then 
     pacman -S refind-efi
     refind-install
