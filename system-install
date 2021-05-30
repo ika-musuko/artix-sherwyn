@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 echo "Welcome to Sherwyn's Artix system-install script!"
 echo 
@@ -61,8 +62,7 @@ echo "=== Generating fstab ==="
 echo
 
 echo "=== chrooting into system ==="
-    artix-chroot /mnt
-echo
+    artix-chroot /mnt << CHROOT_COMMANDS
 
 echo "=== Setting locales ==="
     sed 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen > /etc/locale.gen
@@ -104,6 +104,7 @@ echo
 
 echo "=== Exiting system ==="
     exit
+CHROOT_COMMANDS
     umount -R /mnt
 echo
 
