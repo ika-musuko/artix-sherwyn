@@ -3,13 +3,16 @@
 echo "Welcome to Sherwyn's Artix system-install script!"
 echo 
 
+if [ "$EUID" -ne 0 ]
+then 
+    echo "Run this script as root"
+exit
+fi
+
 echo "=== Preferences ==="
 read -p "Enter username: " username
 read -p "Enter hostname: " hostname
 read -p "Enter install disk: " install_disk
-read -p "Enter root partition size (GB): " size_root_gb
-read -p "Enter home partition size (GB): " size_home_gb
-read -p "Enter swap partition size (GB): " size_swap_gb
 echo
 
 echo "=== Detecting legacy or UEFI... ==="
@@ -23,47 +26,19 @@ echo "=== Detecting legacy or UEFI... ==="
 echo
 
 echo "=== Partitioning disk ==="
-    GB=1073741824
-    size_swap=`expr $size_swap_gb \* $GB`
-    size_root=`expr $size_root_gb \* $GB`
-    size_home=`expr $size_home_gb \* $GB`
-
-    offset_swap=2048
-    offset_root=`expr $offset_swap + $size_swap`
-    offset_home=`expr $offset_root + $size_root`
-    
-    if [ -n $uefi ] 
-    then
-        size_efi_=2097152
-        offset_efi_=`expr $offset_home + $size_home`
-    fi
-
-    partition_commands="label: dos
-label-id: 0x90909090
-device: $install_disk
-unit: sectors
-sector-size: 512
-
-\"$install_disk\"1 : start=$offset_swap, size=$size_swap, type=82
-\"$install_disk\"2 : start=$offset_root, size=$size_root, type=83, bootable
-\"$install_disk\"3 : start=$offset_home, size=$size_home, type=83"
-
-    if [ -n $uefi ] 
-    then
-        partition_commands="${partition_commands}
-\"$install_disk\"4 : start=$offset_efi_, size=$size_efi_, type=83"
-    fi
-
-    sfdisk $install_disk <<-PARTITION_COMMANDS
-        $partition_commands
-    PARTITION_COMMANDS
+    echo "Set \"$install_disk\"1 for swap"
+    echo "Set \"$install_disk\"2 for root"
+    echo "Set \"$install_disk\"3 for home"
+    [ -n $uefi ] && echo "Set \"$install_disk\"4 for uefi"
+    read -p "Press enter to continue to cfdisk"
+    cfdisk $install_disk
 echo
 
 echo "=== Formatting partitions ==="
     mkfs.ext4 -L ROOT "$install_disk"2
-	mkfs.ext4 -L HOME "$install_disk"3
-	[ -n $uefi ] && mkfs.fat -L EFI -F 32 "$install_disk"4 # only for UEFI
-	mkswap -L SWAP "$install_disk"1
+    mkfs.ext4 -L HOME "$install_disk"3
+    [ -n $uefi ] && mkfs.fat -L EFI -F 32 "$install_disk"4 # only for UEFI
+    mkswap -L SWAP "$install_disk"1
 echo
 
 echo "=== Mounting partitions ==="
