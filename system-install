@@ -8,8 +8,8 @@ echo
 
 echo "=== Preferences ==="
 read -p "Enter username: " username
-read -p -s "Enter password: " password
-read -p -s "Confirm password: " confirm_password
+read -p "Enter password: "   -s password
+read -p "Confirm password: " -s confirm_password
 [ "$password" != "$confirm_password" ] && echo "Passwords do not match" && exit
 
 read -p "Enter hostname: " hostname
