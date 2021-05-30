@@ -91,8 +91,8 @@ echo
 
 echo "=== Adding user ==="
     passwd
-    useradd -m $user
-    passwd $user
+    useradd -m $username
+    passwd $username
 echo
 
 echo "=== Setting hostname ==="
