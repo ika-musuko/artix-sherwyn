@@ -6,6 +6,7 @@ echo
 echo "=== Preferences ==="
 read -p "Enter username: " username
 read -p "Enter hostname: " hostname
+read -p "Enter install disk: " install_disk
 read -p "Enter root partition size (GB): " size_root_gb
 read -p "Enter home partition size (GB): " size_home_gb
 read -p "Enter swap partition size (GB): " size_swap_gb
