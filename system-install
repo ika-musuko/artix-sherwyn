@@ -4,14 +4,14 @@ set -e
 echo "Welcome to Sherwyn's Artix system-install script!"
 echo 
 
-if [ "$EUID" -ne 0 ]
-then 
-    echo "Run this script as root"
-exit
-fi
+[ "$EUID" -ne 0 ] && echo "Run this script as root" && exit
 
 echo "=== Preferences ==="
 read -p "Enter username: " username
+read -p -s "Enter password: " password
+read -p -s "Confirm password: " confirm_password
+[ "$password" != "$confirm_password" ] && echo "Passwords do not match" && exit
+
 read -p "Enter hostname: " hostname
 read -p "Enter install disk: " install_disk
 echo
@@ -90,9 +90,9 @@ fi
 echo
 
 echo "=== Adding user ==="
-    passwd
+    echo $password | passwd --stdin root
     useradd -m $username
-    passwd $username
+    echo $password | passwd --stdin $username
 echo
 
 echo "=== Setting hostname ==="
