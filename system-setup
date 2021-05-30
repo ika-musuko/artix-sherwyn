@@ -1,0 +1,110 @@
+#!/bin/sh
+
+# VARIABLES
+# TODO: change this to something that isnt github lol
+githome=https://github.com/ika-musuko
+applications="
+acpilight
+arandr
+artix-branding
+consolas-font
+fcitx5
+fcitx5-configtool
+fcitx5-gtk
+fcitx5-mozc
+fcitx5-qt
+fcitx5-skin-dark-transparent
+feh
+firefox
+flameshot
+fzf
+gcc
+gzip
+i3-gaps
+i3blocks
+i3lock
+i3lock-wrapper
+i3status
+jq
+json-c
+libjson
+libtoo
+lxappearance
+neofetch
+neovim
+noto-fonts-cjk
+ntfs-3g
+openmpt
+os-prober
+pamixer
+pulseaudio
+ripgrep
+rofi
+termite
+thunar
+ttf-inconsolata
+ttf-liberation
+udiskie
+upower
+wget
+wpa_supplicant
+xclip
+xcwd-git
+xorg
+xorg-xmodmap
+zim
+"
+
+# SCRIPT
+echo "=== configure git (should already be installed) ==="
+git config --global credential.helper store
+echo
+
+echo === install yay ===
+sudo pacman -S --needed base-devel
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd ..
+rm -rf yay
+echo
+
+echo === install home directory configs ===
+git clone $githome/home ~
+echo
+
+echo === install applications ===
+yay -Syyu
+yay -S $applications
+echo
+
+echo === install application configs ===
+git clone $githome/config ~/.config
+echo
+
+echo === install fonts ===
+mkdir -p ~/.local/share/fonts
+# TODO: store this font in your own location
+wget https://github.com/adi1090x/termite-style/raw/master/fonts/ProFont.ttf -P ~/.local/share/fonts
+fc-cache -f -v
+echo
+
+echo === configure vim ===
+# TODO: install plugged and run vim +PlugUpdate and symlink .vimrc to init.vim
+echo
+
+echo === configure openmpt ===
+# TODO: get openmpt to read configs out of somewhere in .config
+# this section might not be needed then
+echo
+
+echo === configure firefox ===
+echo
+
+echo === get zim notebooks ===
+git clone $githome/notebooks ~/Notebooks
+echo
+
+# finished
+neofetch
+echo Script Complete! Restart computer to complete setup.

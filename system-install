@@ -1,0 +1,132 @@
+#!/bin/sh
+
+echo "Welcome to Sherwyn's Artix system-install script!"
+echo ""
+
+echo "=== Preferences ==="
+    read -p "Enter username: " username
+    read -p "Enter hostname: " hostname
+    read -p "Enter root partition size (GB): " size_root_gb
+    read -p "Enter home partition size (GB): " size_home_gb
+    read -p "Enter swap partition size (GB): " size_swap_gb
+echo
+
+echo "=== Detecting legacy or UEFI... ==="
+    if [ -d /sys/efi/firmware ] then
+        echo "UEFI detected"
+        uefi=1
+    else
+        echo "Legacy boot detected"
+    fi
+echo
+
+echo "=== Partitioning disk ==="
+    GB=1073741824
+    size_swap=`expr $size_swap_gb \* $GB`
+    size_root=`expr $size_root_gb \* $GB`
+    size_home=`expr $size_home_gb \* $GB`
+
+    offset_swap=2048
+    offset_root=`expr $offset_swap + $size_swap`
+    offset_home=`expr $offset_root + $size_root`
+    
+    if [ -n $uefi ]
+    then
+        size_efi_=2097152
+        offset_efi_=`expr $offset_home + $size_home`
+    fi
+
+    partition_commands="label: dos
+label-id: 0x90909090
+device: $install_disk
+unit: sectors
+sector-size: 512
+
+\"$install_disk\"1 : start=$offset_swap, size=$size_swap, type=82
+\"$install_disk\"2 : start=$offset_root, size=$size_root, type=83, bootable
+\"$install_disk\"3 : start=$offset_home, size=$size_home, type=83"
+
+    if [ -n $uefi ]
+    then
+        partition_commands="${partition_commands}
+\"$install_disk\"4 : start=$offset_efi_, size=$size_efi_, type=83"
+    fi
+
+    sfdisk $install_disk <<-PARTITION_COMMANDS
+        $partition_commands
+    PARTITION_COMMANDS
+echo
+
+echo "=== Formatting partitions ==="
+    mkfs.ext4 -L ROOT "$install_disk"2
+	mkfs.ext4 -L HOME "$install_disk"3
+	[ -n $uefi ] && mkfs.fat -L EFI -F 32 "$install_disk"4 # only for UEFI
+	mkswap -L SWAP "$install_disk"1
+echo
+
+echo "=== Mounting partitions ==="
+    swapon /dev/disk/by-label/SWAP
+    mount /dev/disk/by-label/ROOT /mnt
+    mount /dev/disk/by-label/HOME /mnt/home
+
+    [ -n $uefi ] && mkdir /mnt/boot 
+    [ -n $uefi ] && mount /dev/disk/by-label/EFI /mnt/boot/efi 
+echo
+
+echo "=== Installing base system and kernel ==="
+    basestrap /mnt base base-devel runit elogind-runit
+    basestrap /mnt linux linux-firmware
+echo
+
+echo "=== Generating fstab ==="
+    fstabgen -U /mnt >> /mnt/etc/fstab
+echo
+
+echo "=== chrooting into system ==="
+    artix-chroot /mnt
+echo
+
+echo "=== Setting locales ==="
+    sed 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen > /etc/locale.gen
+    sed 's/#ja_JP.UTF-8/ja_JP.UTF-8/' /etc/locale.gen > /etc/locale.gen
+    locale-gen
+echo
+
+echo "=== Boot loader ==="
+if [ -n $uefi ] then 
+    pacman -S refind-efi
+    refind-install
+else
+    pacman -S grub os-prober
+    grub-install --recheck "$install_disk"
+    grub-mkconfig -o /boot/grub.cfg
+fi
+echo
+
+echo "=== Adding user ==="
+    passwd
+    useradd -m $user
+    passwd $user
+echo
+
+echo "=== Setting hostname ==="
+    echo $hostname > /etc/hostname
+echo
+
+echo "=== Installing network tools ==="
+	pacman -S dhcpcd wpa_supplicant
+	pacman -S connman-runit connman-gtk connman
+	ln -s /etc/runit/sv/connmand /run/runit/service
+echo
+
+echo "=== Installing X, terminal, and window manager ==="
+    pacman -S xorg xorg-xinit termite i3 i3blocks
+echo
+
+echo "=== Exiting system ==="
+    exit
+    umount -R /mnt
+echo
+
+echo "System install complete. Please reboot into system to continue."
+    
