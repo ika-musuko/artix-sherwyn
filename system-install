@@ -68,52 +68,49 @@ echo "=== Generating fstab ==="
     fstabgen -U /mnt >> /mnt/etc/fstab
 echo
 
-echo "=== chrooting into system ==="
-    sleep 2
-    artix-chroot /mnt << CHROOT_COMMANDS
-
+chroot="artix-chroot /mnt"
 echo "=== Setting locales ==="
-    sed 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen > /etc/locale.gen
-    sed 's/#ja_JP.UTF-8/ja_JP.UTF-8/' /etc/locale.gen > /etc/locale.gen
-    locale-gen
+    $chroot sed -i \
+        -e 's/#en_US.UTF-8/en_US.UTF-8/' \
+        -e 's/#ja_JP.UTF-8/ja_JP.UTF-8/' \
+        /etc/locale.gen
+    $chroot locale-gen
 echo
 
 echo "=== Boot loader ==="
 if [ "${uefi+1}" ] 
 then 
     sleep 2
-    pacman -S --noconfirm refind-efi
-    refind-install
+    $chroot pacman -S --noconfirm refind-efi
+    $chroot refind-install
 else
-    pacman -S --noconfirm grub os-prober
-    grub-install --recheck ${install_disk}
-    grub-mkconfig -o /boot/grub.cfg
+    $chroot pacman -S --noconfirm grub os-prober
+    $chroot grub-install --recheck ${install_disk}
+    $chroot grub-mkconfig -o /boot/grub/grub.cfg
 fi
 echo
 
 echo "=== Adding user ==="
-    echo $password | passwd --stdin root
-    useradd -m $username
-    echo $password | passwd --stdin $username
+    $chroot echo $password | passwd --stdin root
+    $chroot useradd -m $username
+    $chroot echo $password | passwd --stdin $username
 echo
 
 echo "=== Setting hostname ==="
-    echo $hostname > /etc/hostname
+    $chroot echo $hostname > /etc/hostname
 echo
 
 echo "=== Installing network tools ==="
-    pacman -S --noconfirm dhcpcd wpa_supplicant
-    pacman -S --noconfirm connman-runit connman-gtk connman
-    ln -s /etc/runit/sv/connmand /run/runit/service
+    $chroot pacman -S --noconfirm dhcpcd wpa_supplicant
+    $chroot pacman -S --noconfirm connman-runit connman-gtk connman
+    $chroot ln -s /etc/runit/sv/connmand /run/runit/service
 echo
 
 echo "=== Installing X, terminal, and window manager ==="
-    pacman -S --noconfirm xorg xorg-xinit termite i3 i3blocks
+    $chroot pacman -S --noconfirm xorg xorg-xinit termite i3 i3blocks
 echo
 
-echo "=== Exiting system ==="
-    exit
-CHROOT_COMMANDS
+echo "=== Unmounting $install_disk from /mnt ==="
     umount -R /mnt
 echo
 
