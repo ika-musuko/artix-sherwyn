@@ -45,8 +45,10 @@ echo "=== Formatting partitions ==="
 echo
 
 echo "=== Mounting partitions ==="
+    sleep 2
     swapon /dev/disk/by-label/SWAP
     mount /dev/disk/by-label/ROOT /mnt
+    mkdir /mnt/home
     mount /dev/disk/by-label/HOME /mnt/home
 
     [ "${uefi+1}" ] && mkdir /mnt/boot 
@@ -54,15 +56,18 @@ echo "=== Mounting partitions ==="
 echo
 
 echo "=== Installing base system and kernel ==="
+    sleep 2
     basestrap /mnt base base-devel runit elogind-runit
     basestrap /mnt linux linux-firmware
 echo
 
 echo "=== Generating fstab ==="
+    sleep 2
     fstabgen -U /mnt >> /mnt/etc/fstab
 echo
 
 echo "=== chrooting into system ==="
+    sleep 2
     artix-chroot /mnt << CHROOT_COMMANDS
 
 echo "=== Setting locales ==="
