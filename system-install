@@ -162,8 +162,6 @@ CHROOT_YAY_INSTALL
     curl https://github.com/adi1090x/termite-style/blob/master/fonts/ProFont.ttf --output /mnt/usr/share/fonts/TTF/ProFont.ttf 
     fc-cache -fv
 
-    $chroot $asuser /home/$username/termite-style/install
-
     echo "-> vim"
     $chroot ln -s /home/$username/.config/nvim/init.vim /home/$username/.vimrc
     $chroot ln -s /usr/bin/nvim /usr/bin/vim
