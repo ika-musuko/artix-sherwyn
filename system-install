@@ -105,6 +105,11 @@ echo "=== Setting hostname ==="
     $chroot echo $hostname > /etc/hostname
 echo
 
+echo "=== Setting timezone ==="
+    $chroot ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+    $chroot hwclock --systohc
+echo
+
 echo "=== Installing network tools ==="
     $chroot pacman -S --noconfirm dhcpcd wpa_supplicant
     $chroot pacman -S --noconfirm connman-runit connman-gtk connman
