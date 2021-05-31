@@ -16,12 +16,10 @@ gzip
 i3-gaps
 i3blocks
 i3lock
-i3lock-wrapper
 i3status
 jq
 json-c
 libjson
-libtoo
 lxappearance
 neofetch
 neovim
@@ -34,7 +32,6 @@ pulseaudio
 ripgrep
 rofi
 termite
-termite-style
 thunar
 udiskie
 upower

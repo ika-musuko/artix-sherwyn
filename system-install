@@ -143,7 +143,7 @@ CHROOT_YAY_INSTALL
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
-    $chroot yay -Sy
+    $chroot yay -Sy --noconfirm
     $chroot yay -S --noconfirm $(cat applications)
    
     echo "-> .config"
@@ -153,6 +153,10 @@ CHROOT_YAY_INSTALL
 
     echo "-> scripts"
     $chroot git clone http://github.com/ika-musuko/scripts /home/$username/scripts
+
+    echo "-> termite-style"
+    $chroot git clone https://github.com/adi1090x/termite-style /home/$username
+    $chroot /home/$username/termite-style/install
 
     echo "-> vim"
     $chroot ln -s /home/$username/.config/nvim/init.vim /home/$username/.vimrc
