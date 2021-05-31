@@ -121,13 +121,12 @@ echo "=== Installing network tools ==="
 echo
 
 echo "=== Installing and configuring applications and scripts ==="
+    $chroot echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
     echo "-> git"
     $chroot pacman -S --noconfirm git
     $chroot git config --global credential.helper store
 
-    echo "-> creating nobody user for installing applications"
-    $chroot useradd -G wheel nobody
-    $chroot echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
     echo "-> yay"
     artix-chroot /mnt << CHROOT_YAY_INSTALL
@@ -149,8 +148,6 @@ CHROOT_YAY_INSTALL
     $chroot sudo -u nobody yay -Sy --noconfirm
     $chroot sudo -u nobody yay -S --noconfirm $(cat applications)
    
-    echo "-> deleting nobody user"
-    $chroot userdel nobody
     $chroot sed -i -e '/nobody ALL/d' /etc/sudoers
 
     echo "-> .config"
