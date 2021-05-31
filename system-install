@@ -126,15 +126,15 @@ echo "=== Installing and configuring applications and scripts ==="
     echo "-> git"
     $chroot pacman -S --noconfirm git
     $chroot git config --global credential.helper store
-
+    $chroot git config --global core.editor vim
 
     echo "-> yay"
     artix-chroot /mnt << CHROOT_YAY_INSTALL
 cd /home/$username
-git clone https://aur.archlinux.org/yay.git
-chmod a+w yay
+pacman -S --noconfirm go
+git clone https://github.com/Jguer/yay
 cd yay
-sudo -u nobody makepkg -si
+make install
 cd ..
 rm -rf yay
 CHROOT_YAY_INSTALL
