@@ -108,7 +108,7 @@ echo
 echo "=== Installing network tools ==="
     $chroot pacman -S --noconfirm dhcpcd wpa_supplicant
     $chroot pacman -S --noconfirm connman-runit connman-gtk connman
-    $chroot ln -s /etc/runit/sv/connmand /run/runit/service
+    $chroot ln -s /etc/runit/sv/connmand /etc/runit/runsvdir/default
 echo
 
 echo "=== Installing X, terminal, and window manager ==="
