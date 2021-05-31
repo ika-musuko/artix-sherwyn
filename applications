@@ -42,5 +42,6 @@ xclip
 xcwd-git
 xdo
 xorg
+xorg-xinit
 xorg-xmodmap
 zim

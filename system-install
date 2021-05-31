@@ -108,7 +108,7 @@ echo "=== Giving group wheel superuser permissions ==="
 echo
 
 echo "=== Setting hostname ==="
-    $chroot echo $hostname > /etc/hostname
+    echo $hostname > /mnt/etc/hostname
 echo
 
 echo "=== Setting timezone ==="
@@ -131,7 +131,7 @@ echo "=== Installing and configuring applications and scripts ==="
     $chroot $asuser git config --global core.editor vim
 
     echo "-> yay"
-    artix-chroot /mnt << CHROOT_YAY_INSTALL
+    $chroot << CHROOT_YAY_INSTALL
 cd /home/$username
 pacman -S --noconfirm go
 git clone https://github.com/Jguer/yay
@@ -166,7 +166,7 @@ CHROOT_YAY_INSTALL
     $chroot ln -s /usr/bin/nvim /usr/bin/vim
     $chroot $asuser curl -fLo /home/$username/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    $chroot $asuser vim +PlugUpdate +qall
+    $chroot $asuser vim +PlugUpdate +qall &
 
     echo "-> fonts refresh"
     $chroot fc-cache -fv
