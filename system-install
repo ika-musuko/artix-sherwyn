@@ -144,7 +144,7 @@ CHROOT_YAY_INSTALL
     echo "-> enabling multilib repos (for wine)"
     $chroot sed -i \
         -e '/#\[multilib\]/s/^#//' \
-        -e '/\[multilib\]/{N;s/\n#/\n/}' \
+        -e '/\[multilib\]/{N;s/\n#/\n/}' \\]
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
@@ -157,8 +157,11 @@ CHROOT_YAY_INSTALL
     echo "-> scripts"
     $chroot $asuser git clone http://github.com/ika-musuko/scripts /home/$username/scripts
 
-    echo "-> termite-style"
-    $chroot $asuser git clone https://github.com/adi1090x/termite-style /home/$username/termite-style
+    echo "-> fonts"
+    $chroot mkdir /usr/share/fonts/TTF
+    curl https://github.com/adi1090x/termite-style/blob/master/fonts/ProFont.ttf --output /mnt/usr/share/fonts/TTF/ProFont.ttf 
+    fc-cache -fv
+
     $chroot $asuser /home/$username/termite-style/install
 
     echo "-> vim"
@@ -167,9 +170,6 @@ CHROOT_YAY_INSTALL
     $chroot $asuser curl -fLo /home/$username/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     $chroot $asuser vim +PlugUpdate +qall &
-
-    echo "-> fonts refresh"
-    $chroot fc-cache -fv
 
     echo "-> .xinitrc"
     $chroot $asuser touch /home/$username/.xinitrc
