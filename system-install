@@ -125,14 +125,14 @@ echo "=== Installing and configuring applications and scripts ==="
     $chroot git config --global credential.helper store
 
     echo "-> yay"
-    artix-chroot /mnt <<-CHROOT_YAY_INSTALL
-        cd /home/$username
-        git clone https://aur.archlinux.org/yay.git
-        cd yay
-        makepkg -si
-        cd ..
-        rm -rf yay
-    CHROOT_YAY_INSTALL
+    script_home=$(pwd) 
+    cd /mnt/home/$username
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
+    cd ..
+    rm -rf yay
+    cd $script_home
 
     echo "-> installing applications from yay"
     $chroot yay -S --noconfirm $applications
