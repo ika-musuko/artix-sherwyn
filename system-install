@@ -125,13 +125,16 @@ echo "=== Installing and configuring applications and scripts ==="
     $chroot pacman -S --noconfirm git
     $chroot git config --global credential.helper store
 
+    echo "-> creating nobody user for installing applications"
+    $chroot useradd -G wheel nobody
+    $chroot echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
     echo "-> yay"
     artix-chroot /mnt << CHROOT_YAY_INSTALL
-pacman -S --noconfirm go
 cd /home/$username
-git clone https://github.com/Jguer/yay
+git clone https://aur.archlinux.org/yay.git
 cd yay
-make install
+sudo -u nobody makepkg -si
 cd ..
 rm -rf yay
 CHROOT_YAY_INSTALL
@@ -143,9 +146,13 @@ CHROOT_YAY_INSTALL
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
-    $chroot sudo -u $username yay -Sy --noconfirm
-    $chroot sudo -u $username yay -S --noconfirm $(cat applications)
+    $chroot sudo -u nobody yay -Sy --noconfirm
+    $chroot sudo -u nobody yay -S --noconfirm $(cat applications)
    
+    echo "-> deleting nobody user"
+    $chroot userdel nobody
+    $chroot sed -i -e '/nobody ALL/d' /etc/sudoers
+
     echo "-> .config"
     $chroot git clone https://github.com/ika-musuko/config
     $chroot cp -r config/* /home/$username/.config
