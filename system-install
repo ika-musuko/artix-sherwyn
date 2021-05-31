@@ -102,7 +102,7 @@ echo "=== Adding user and setting passwords ==="
 echo
 
 echo "=== Giving group wheel superuser permissions ==="
-    sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL={ALL)/" /etc/sudoers
+    $chroot sed -i -e "/# %wheel ALL=(ALL) ALL/s/^# //" /etc/sudoers
 echo
 
 echo "=== Setting hostname ==="
