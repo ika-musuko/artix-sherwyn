@@ -150,15 +150,13 @@ CHROOT_YAY_INSTALL
     $chroot sudo -u $username yay -S --noconfirm $(cat applications)
 
     echo "-> .config"
-    $chroot git clone https://github.com/ika-musuko/config
-    $chroot cp -r config/* /home/$username/.config
-    $chroot rm -rf config
+    git clone https://github.com/ika-musuko/config /mnt/home/$username/.config
 
     echo "-> scripts"
-    $chroot git clone http://github.com/ika-musuko/scripts /home/$username/scripts
+    git clone http://github.com/ika-musuko/scripts /mnt/home/$username/scripts
 
     echo "-> termite-style"
-    $chroot git clone https://github.com/adi1090x/termite-style /home/$username
+    git clone https://github.com/adi1090x/termite-style /mnt/home/$username
     $chroot /home/$username/termite-style/install
 
     echo "-> vim"
