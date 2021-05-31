@@ -121,7 +121,7 @@ echo "=== Installing network tools ==="
 echo
 
 echo "=== Installing and configuring applications and scripts ==="
-    $chroot echo "$username ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "$username ALL=(ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 
     echo "-> git"
     $chroot pacman -S --noconfirm git
