@@ -144,7 +144,7 @@ CHROOT_YAY_INSTALL
     echo "-> enabling multilib repos (for wine)"
     $chroot sed -i \
         -e '/#\[multilib\]/s/^#//' \
-        -e '/\[multilib\]/{N;s/\n#/\n/}' \\]
+        -e '/\[multilib\]/{N;s/\n#/\n/}' \
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
