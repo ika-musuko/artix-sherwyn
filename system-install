@@ -96,9 +96,9 @@ echo
 
 echo "=== Adding user and setting passwords ==="
     password_and_confirm="$password\n$password"
-    $chroot echo -e "$password_and_confirm" | passwd root
+    echo -e "$password_and_confirm" | $chroot passwd root
     $chroot useradd -m "$username"
-    $chroot echo -e "$password_and_confirm" | passwd "$username"
+    echo -e "$password_and_confirm" | $chroot passwd "$username"
 echo
 
 echo "=== Setting hostname ==="
