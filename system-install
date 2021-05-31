@@ -179,8 +179,8 @@ export QT_IM_MODULE=fcitx5
 export XMODIFIERS=@im=fcitx5
 
 exec i3
-    XINITRC
-exec i3
+XINITRC
+
 echo
 
 echo "=== Unmounting $install_disk from /mnt ==="
