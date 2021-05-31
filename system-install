@@ -121,9 +121,6 @@ echo "=== Installing network tools ==="
 echo
 
 echo "=== Installing and configuring applications and scripts ==="
-    githome=https://github.com/ika-musuko
-    applications=$(tr '\n' ' ' < applications)
-
     echo "-> git"
     $chroot pacman -S --noconfirm git
     $chroot git config --global credential.helper store
@@ -139,8 +136,14 @@ cd ..
 rm -rf yay
 CHROOT_YAY_INSTALL
 
+    echo "-> enabling multilib repos (for wine)"
+    $chroot sed -i \
+        -e '/#\[multilib\]/s/^#//' \
+        -e '/\[multilib\]/{N;s/\n#/\n/}' \
+        /etc/pacman.conf
+
     echo "-> installing applications from yay"
-    $chroot yay -S --noconfirm $applications
+    $chroot yay -S --noconfirm $(cat applications)
    
     echo "-> .config"
     $chroot git clone https://github.com/ika-musuko/config
