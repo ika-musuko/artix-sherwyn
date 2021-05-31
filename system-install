@@ -132,6 +132,7 @@ echo "=== Installing and configuring applications and scripts ==="
     artix-chroot /mnt << CHROOT_YAY_INSTALL
 cd /home/$username
 git clone https://aur.archlinux.org/yay.git
+chmod a+w yay
 cd yay
 sudo -u nobody makepkg -si
 cd ..
@@ -169,8 +170,8 @@ CHROOT_YAY_INSTALL
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     $chroot vim +PlugUpdate
 
-    touch /mnt/home/$username/.xinitrc
     echo "-> .xinitrc"
+    touch /mnt/home/$username/.xinitrc
     cat <<-XINITRC > /mnt/home/$username/.xinitrc
         export GTK_IM_MODULE=fcitx5
         export QT_IM_MODULE=fcitx5
