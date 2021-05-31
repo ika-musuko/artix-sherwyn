@@ -101,6 +101,10 @@ echo "=== Adding user and setting passwords ==="
     echo -e "$password_and_confirm" | $chroot passwd "$username"
 echo
 
+echo "=== Giving group wheel superuser permissions ==="
+    sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL={ALL)/" /etc/sudoers
+echo
+
 echo "=== Setting hostname ==="
     $chroot echo $hostname > /etc/hostname
 echo
