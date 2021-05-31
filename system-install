@@ -121,7 +121,7 @@ echo "=== Installing network tools ==="
 echo
 
 echo "=== Installing and configuring applications and scripts ==="
-    $chroot echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    $chroot echo "$username ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
     echo "-> git"
     $chroot pacman -S --noconfirm git
@@ -146,10 +146,8 @@ CHROOT_YAY_INSTALL
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
-    $chroot sudo -u nobody yay -Sy --noconfirm
-    $chroot sudo -u nobody yay -S --noconfirm $(cat applications)
-   
-    $chroot sed -i -e '/nobody ALL/d' /etc/sudoers
+    $chroot sudo -u $username yay -Sy --noconfirm
+    $chroot sudo -u $username yay -S --noconfirm $(cat applications)
 
     echo "-> .config"
     $chroot git clone https://github.com/ika-musuko/config
