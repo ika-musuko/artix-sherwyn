@@ -73,6 +73,7 @@ echo "=== Generating fstab ==="
 echo
 
 chroot="artix-chroot /mnt"
+asuser="sudo -u $username"
 echo "=== Setting locales ==="
     $chroot sed -i \
         -e 's/#en_US.UTF-8/en_US.UTF-8/' \
@@ -125,8 +126,8 @@ echo "=== Installing and configuring applications and scripts ==="
 
     echo "-> git"
     $chroot pacman -S --noconfirm git
-    $chroot git config --global credential.helper store
-    $chroot git config --global core.editor vim
+    $chroot $asuser git config --global credential.helper store
+    $chroot $asuser git config --global core.editor vim
 
     echo "-> yay"
     artix-chroot /mnt << CHROOT_YAY_INSTALL
@@ -146,28 +147,28 @@ CHROOT_YAY_INSTALL
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
-    $chroot sudo -u $username yay -Sy --noconfirm
-    $chroot sudo -u $username yay -S --noconfirm $(cat applications)
+    $chroot $asuser yay -Sy --noconfirm
+    $chroot $asuser yay -S --noconfirm $(cat applications)
 
     echo "-> .config"
-    git clone https://github.com/ika-musuko/config /mnt/home/$username/.config
+    $chroot $asuser git clone https://github.com/ika-musuko/config /home/$username/.config
 
     echo "-> scripts"
-    git clone http://github.com/ika-musuko/scripts /mnt/home/$username/scripts
+    $chroot $asuser git clone http://github.com/ika-musuko/scripts /home/$username/scripts
 
     echo "-> termite-style"
-    git clone https://github.com/adi1090x/termite-style /mnt/home/$username
-    $chroot /home/$username/termite-style/install
+    $chroot $asuser git clone https://github.com/adi1090x/termite-style /home/$username/termite-style
+    $chroot $asuser /home/$username/termite-style/install
 
     echo "-> vim"
     $chroot ln -s /home/$username/.config/nvim/init.vim /home/$username/.vimrc
     $chroot ln -s /usr/bin/nvim /usr/bin/vim
-    $chroot curl -fLo /home/$username/.vim/autoload/plug.vim --create-dirs \
+    $chroot $asuser curl -fLo /home/$username/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    $chroot vim +PlugUpdate
+    $chroot $asuser vim +PlugUpdate
 
     echo "-> .xinitrc"
-    touch /mnt/home/$username/.xinitrc
+    $chroot $asuser touch /home/$username/.xinitrc
     cat <<-XINITRC > /mnt/home/$username/.xinitrc
         export GTK_IM_MODULE=fcitx5
         export QT_IM_MODULE=fcitx5
