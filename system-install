@@ -130,10 +130,10 @@ echo "=== Installing and configuring applications and scripts ==="
 
     echo "-> yay"
     artix-chroot /mnt << CHROOT_YAY_INSTALL
+pacman -S --noconfirm go
 cd /home/$username
-git clone https://aur.archlinux.org/yay.git
-cd yay
-sudo -u $username makepkg -si
+git clone https://github.com/Jguer/yay
+make install
 cd ..
 rm -rf yay
 CHROOT_YAY_INSTALL
