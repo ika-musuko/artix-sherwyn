@@ -143,8 +143,8 @@ CHROOT_YAY_INSTALL
         /etc/pacman.conf
 
     echo "-> installing applications from yay"
-    $chroot yay -Sy --noconfirm
-    $chroot yay -S --noconfirm $(cat applications)
+    $chroot sudo -u $username yay -Sy --noconfirm
+    $chroot sudo -u $username yay -S --noconfirm $(cat applications)
    
     echo "-> .config"
     $chroot git clone https://github.com/ika-musuko/config
