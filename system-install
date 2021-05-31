@@ -132,7 +132,6 @@ echo "=== Installing and configuring applications and scripts ==="
         makepkg -si
         cd ..
         rm -rf yay
-        exit
     CHROOT_YAY_INSTALL
 
     echo "-> installing applications from yay"
