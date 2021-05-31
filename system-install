@@ -166,19 +166,19 @@ CHROOT_YAY_INSTALL
     $chroot ln -s /usr/bin/nvim /usr/bin/vim
     $chroot $asuser curl -fLo /home/$username/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    $chroot $asuser vim +PlugUpdate
+    $chroot $asuser vim +PlugUpdate +qall
 
     echo "-> fonts refresh"
     $chroot fc-cache -fv
 
     echo "-> .xinitrc"
     $chroot $asuser touch /home/$username/.xinitrc
-    cat <<-XINITRC > /mnt/home/$username/.xinitrc
-        export GTK_IM_MODULE=fcitx5
-        export QT_IM_MODULE=fcitx5
-        export XMODIFIERS=@im=fcitx5
+    cat << XINITRC > /mnt/home/$username/.xinitrc
+export GTK_IM_MODULE=fcitx5
+export QT_IM_MODULE=fcitx5
+export XMODIFIERS=@im=fcitx5
 
-        exec i3
+exec i3
     XINITRC
 exec i3
 echo
