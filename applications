@@ -36,14 +36,13 @@ rofi
 termite
 termite-style
 thunar
-ttf-inconsolata
-ttf-liberation
 udiskie
 upower
 wget
 wpa_supplicant
 xclip
 xcwd-git
+xdo
 xorg
 xorg-xmodmap
 zim

@@ -97,7 +97,7 @@ echo
 echo "=== Adding user and setting passwords ==="
     password_and_confirm="$password\n$password"
     echo -e "$password_and_confirm" | $chroot passwd root
-    $chroot useradd -m "$username"
+    $chroot useradd -m -G wheel,storage,optical "$username"
     echo -e "$password_and_confirm" | $chroot passwd "$username"
 echo
 
@@ -111,8 +111,48 @@ echo "=== Installing network tools ==="
     $chroot ln -s /etc/runit/sv/connmand /etc/runit/runsvdir/default
 echo
 
-echo "=== Installing X, terminal, and window manager ==="
-    $chroot pacman -S --noconfirm xorg xorg-xinit termite i3 i3blocks
+echo "=== Installing and configuring applications and scripts ==="
+    githome=https://github.com/ika-musuko
+    applications=$(tr '\n' ' ' < applications)
+
+    echo "-> git"
+    $chroot pacman -S --noconfirm git
+    $chroot git config --global credential.helper store
+
+    echo "-> yay"
+    artix-chroot /mnt <<-CHROOT_YAY_INSTALL
+        cd /home/$username
+        git clone https://aur.archlinux.org/yay.git
+        cd yay
+        makepkg -si
+        cd ..
+        rm -rf yay
+        exit
+    CHROOT_YAY_INSTALL
+
+    echo "-> installing applications from yay"
+    $chroot yay -S --noconfirm $applications
+   
+    echo "-> .config"
+    $chroot git clone https://github.com/ika-musuko/config
+    $chroot cp -r config/* /home/$username/.config
+    $chroot rm -rf config
+
+    echo "-> scripts"
+    $chroot git clone http://github.com/ika-musuko/scripts /home/$username/scripts
+
+    echo "-> vim"
+    $chroot ln -s /home/$username/.config/nvim/init.vim /home/$username/.vimrc
+
+    echo "-> .xinitrc"
+    cat <<-XINITRC > /mnt/home/$username/.xinitrc
+        export GTK_IM_MODULE=fcitx5
+        export QT_IM_MODULE=fcitx5
+        export XMODIFIERS=@im=fcitx5
+
+        exec i3
+    XINITRC
+exec i3
 echo
 
 echo "=== Unmounting $install_disk from /mnt ==="
