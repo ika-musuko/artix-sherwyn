@@ -133,6 +133,7 @@ echo "=== Installing and configuring applications and scripts ==="
 pacman -S --noconfirm go
 cd /home/$username
 git clone https://github.com/Jguer/yay
+cd yay
 make install
 cd ..
 rm -rf yay
