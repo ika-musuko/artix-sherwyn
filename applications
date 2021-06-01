@@ -25,7 +25,6 @@ neofetch
 neovim
 noto-fonts-cjk
 ntfs-3g
-openmpt
 os-prober
 pamixer
 profont-otb
@@ -34,18 +33,14 @@ ripgrep
 rofi
 termite
 thunar
-ttf-inconsolata
 tldr
+ttf-inconsolata
 udiskie
 upower
-unzip
-wine
 wget
 wpa_supplicant
 xclip
 xcwd-git
-xdo
 xorg
 xorg-xinit
 xorg-xmodmap
-zim
