@@ -98,7 +98,7 @@ echo
 echo "=== Adding user and setting passwords ==="
     password_and_confirm="$password\n$password"
     echo -e "$password_and_confirm" | $chroot passwd root
-    $chroot useradd -m -G wheel,storage,optical "$username"
+    $chroot useradd -m -G wheel,storage,optical,video "$username"
     echo -e "$password_and_confirm" | $chroot passwd "$username"
     $chroot chmod 777 /home/$username
 echo
