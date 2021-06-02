@@ -159,7 +159,7 @@ Include = /etc/pacman.d/mirrorlist-arch
 PACMANREPOS
 
     echo "-> installing applications from yay"
-    unset -e
+    set +e
     $chroot $asuser yay -Sy --noconfirm
     $chroot $asuser yay -S --noconfirm $(cat applications)
 
