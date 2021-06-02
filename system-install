@@ -34,6 +34,9 @@ echo "=== Detecting legacy or UEFI... ==="
 echo
 
 echo "=== Partitioning disk ==="
+    [ "${uefi+1}" ] \
+        && echo "Format the disk as GPT" \
+        || echo "Format the disk as DOS"
     echo "Set ${install_disk}1 for swap"
     echo "Set ${install_disk}2 for root"
     echo "Set ${install_disk}3 for home"
@@ -46,7 +49,7 @@ echo "=== Formatting partitions ==="
     sleep 2
     mkfs.ext4 -L ROOT ${install_disk}2
     mkfs.ext4 -L HOME ${install_disk}3
-    [ "${uefi+1}" ] && mkfs.fat -L EFI -F 32 ${install_disk}4 # only for UEFI
+    [ "${uefi+1}" ] && mkfs.fat -L EFI -F 32 ${install_disk}4 
     mkswap -L SWAP ${install_disk}1
 echo
 
@@ -141,13 +144,22 @@ cd ..
 rm -rf yay
 CHROOT_YAY_INSTALL
 
-    echo "-> enabling multilib repos (for wine)"
-    $chroot sed -i \
-        -e '/#\[multilib\]/s/^#//' \
-        -e '/\[multilib\]/{N;s/\n#/\n/}' \
-        /etc/pacman.conf
+    echo "-> enabling archlinux repos (which were disabled by default for some reason now)"
+    $chroot pacman -S --noconfirm artix-archlinux-support
+    $chroot pacman-key --populate archlinux
+    cat << PACMANREPOS >> /mnt/etc/pacman.conf
+[community]
+Include = /etc/pacman.d/mirrorlist-arch
+
+[extra]
+Include = /etc/pacman.d/mirrorlist-arch
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist-arch
+PACMANREPOS
 
     echo "-> installing applications from yay"
+    unset -e
     $chroot $asuser yay -Sy --noconfirm
     $chroot $asuser yay -S --noconfirm $(cat applications)
 

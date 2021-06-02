@@ -1,6 +1,7 @@
 acpilight
 arandr
 artix-branding
+bc
 consolas-font
 fcitx5
 fcitx5-configtool
@@ -22,9 +23,11 @@ jq
 json-c
 libjson
 lxappearance
+man
 neofetch
 neovim
 noto-fonts-cjk
+noto-fonts-emoji
 ntfs-3g
 os-prober
 pamixer
@@ -32,6 +35,7 @@ profont-otb
 pulseaudio
 ripgrep
 rofi
+rsync
 termite
 thunar
 tldr
